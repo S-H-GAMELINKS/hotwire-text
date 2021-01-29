@@ -1,24 +1,77 @@
-# README
+# Hotwire Text
+## 概要
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+`Hotwire`を使い、Slack風のチャットアプリを作るチュートリアルになります。
 
-Things you may want to cover:
+## 手順
+### アプリのひな型を作る
 
-* Ruby version
+まずは、アプリの雛形を`rails new`コマンドで作成します。
 
-* System dependencies
+```bash
+rails new hotwire-text --skip-javascript
+```
 
-* Configuration
+`Hotwire`では`Webpacker`を使わないので`--skip-javascript`をオプションとして追加しています。
 
-* Database creation
+### Hotwireをインストール
 
-* Database initialization
+次に、`Hotwire`を先ほど作成したアプリにインストールします。
 
-* How to run the test suite
+まずは、`Gemfile`に以下のコードを追加します。
 
-* Services (job queues, cache servers, search engines, etc.)
+```ruby
+# Add Hotwire gem
+gem 'hotwire-rails'
+```
 
-* Deployment instructions
+`Gemfile`に追加後、`bundle install`を実行します。
 
-* ...
+```bash
+bundle install
+```
+
+`bundle install`後、`rails hotwire:install`を実行します。
+
+```bash
+rails hotwire:install
+```
+
+これで`Hotwire`がインストールされます。
+
+### チャンネルを作成
+
+次に`scaffold`コマンドを使ってチャンネルを作成していきます。
+
+```bash
+rails g scaffold Channel title about:text
+```
+
+`scaffold`コマンドを実行後、`db:migrate`でマイグレーションを実行します。
+
+```bash
+rails db:migrate
+```
+
+これでチャンネルが作成できました。
+
+
+### メッセージを作成
+
+次に、`rails g model`コマンドでメッセージを作成します。
+
+```bash
+rails g model Message channel:references content:text
+```
+
+コマンド実行後、`db:migrate`を実行します。
+
+```bash
+rails db:migrate
+```
+
+### TurboでSPA化
+
+### Bootstrapを導入
+
+### レイアウトの調整
