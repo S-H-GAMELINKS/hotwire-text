@@ -24,6 +24,9 @@ gem 'redis', '~> 4.0'
 # Add Hotwire gem
 gem 'hotwire-rails'
 
+# Using Bootstrap4
+gem 'bootstrap'
+
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.4', require: false
 
