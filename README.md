@@ -70,6 +70,84 @@ rails g model Message channel:references content:text
 rails db:migrate
 ```
 
+次に、メッセージ用のルーティングを追加します。
+
+```diff
+Rails.application.routes.draw do
+-  resources :channels
++  resources :channels do
++    resources :messages
++  end
+  # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
+end
+
+```
+
+また`Channel`モデルに`Message`モデルとのリレーションを追加します。
+
+```diff
+class Channel < ApplicationRecord
++    has_many :messages
+end
+
+```
+
+次に、メッセージ用のテンプレートとして`app/views/messages/_message.html.erb`を追加します。
+
+```erb
+<p id="<%= dom_id message %>">
+  <%= message.created_at.to_s(:short) %>: <%= message.content %>
+</p>
+
+```
+
+`app/views/messages/new.html.erb`というファイル名で、新しくメッセージを追加するためのフォームのテンプレートも作成します。
+
+
+```erb
+<h1>New Message</h1>
+
+<%= form_with(model: [ @message.channel, @message ]) do |form| %>
+    <div class="field">
+        <%= form.text_field :content %>
+        <%= form.submit "Send" %>
+    </div>
+<% end %>
+
+<%= link_to 'Back', @message.channel %>
+
+```
+
+ここまでの段階でメッセージ用のビューは作成できています。
+次に、`app/controllers/messages_controller.rb`を以下のように作成します。
+
+
+```ruby
+class MessagesController < ApplicationController
+    before_action :set_channel, only: [:new, :create]
+
+    def new
+      @message = @channel.messages.new
+    end
+
+    def create
+      @message = @channel.messages.create!(message_params)
+
+      redirect_to @channel
+    end
+
+    private
+      def set_channel
+        @channel = Channel.find(params[:channel_id])
+      end
+
+      def message_params
+        params.require(:message).permit(:content)
+      end
+end
+
+```
+
 ### TurboでSPA化
 
 ### Bootstrapを導入
